@@ -73,11 +73,13 @@ td{padding:.75rem 0;font-size:.88rem;color:#cbd5e1;border-bottom:1px solid #1e29
           <td><span class="badge <%= u.rol %>"><%= u.rol %></span></td>
           <td style="color:#64748b"><%= u.area_nombre || '—' %></td>
           <td>
-            <% if (u.username !== 'admin') { %>
+            <a href="/admin/usuarios/<%= u.id %>/editar" 
+             style="padding:3px 12px;background:#1e3a5f;color:#60a5fa;border-radius:6px;font-size:.78rem;text-decoration:none;margin-right:4px">Editar</a>
+          <% if (u.username !== 'admin') { %>
             <form method="POST" action="/admin/usuarios/<%= u.id %>/eliminar" style="display:inline">
               <button class="btn-sm" onclick="return confirm('¿Desactivar usuario?')">Desactivar</button>
             </form>
-            <% } %>
+          <% } %>
           </td>
         </tr>
         <% }) %>

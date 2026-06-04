@@ -302,4 +302,36 @@ router.post('/ticket/:id/reabrir', async (req, res) => {
         res.status(500).send('Error reabriendo ticket');
     }
 });
+router.get('/usuarios/:id/editar', async (req, res) => {
+    try {
+        const [[usuario]] = await db.execute('SELECT * FROM usuarios WHERE id = ?', [req.params.id]);
+        const [areas] = await db.execute('SELECT * FROM areas WHERE activa = 1');
+        res.render('admin/editar-usuario', { usuario, areas });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error cargando usuario');
+    }
+});
+
+router.post('/usuarios/:id/editar', async (req, res) => {
+    const { nombre, email, rol, area_id, password } = req.body;
+    try {
+        if (password && password.trim() !== '') {
+            const hash = await bcrypt.hash(password, 12);
+            await db.execute(
+                'UPDATE usuarios SET nombre=?, email=?, rol=?, area_id=?, password=? WHERE id=?',
+                [nombre, email, rol, area_id || null, hash, req.params.id]
+            );
+        } else {
+            await db.execute(
+                'UPDATE usuarios SET nombre=?, email=?, rol=?, area_id=? WHERE id=?',
+                [nombre, email, rol, area_id || null, req.params.id]
+            );
+        }
+        res.redirect('/admin/usuarios');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error actualizando usuario');
+    }
+});
 module.exports = router;

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editar Usuario</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+nav{background:#1e293b;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #334155}
+nav .brand{color:white;font-weight:700;font-size:1.1rem;letter-spacing:-.02em}
+nav .brand span{color:#3b82f6}
+nav .links a{color:#94a3b8;text-decoration:none;padding:.4rem .75rem;border-radius:6px;font-size:.85rem}
+nav .links a:hover{color:white;background:#334155}
+.container{padding:1.5rem 2rem;max-width:600px;margin:0 auto}
+.back{color:#64748b;text-decoration:none;font-size:.85rem;display:inline-flex;align-items:center;gap:.4rem;margin-bottom:1.25rem}
+.back:hover{color:#94a3b8}
+h1{font-size:1.4rem;font-weight:700;color:white;margin-bottom:1.5rem}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.5rem}
+label{display:block;font-size:.78rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;margin-top:1rem}
+label:first-of-type{margin-top:0}
+input,select{width:100%;padding:.6rem .75rem;background:#0f172a;border:1px solid #334155;
+  color:#e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit}
+input::placeholder{color:#475569}
+select option{background:#1e293b}
+.hint{font-size:.75rem;color:#475569;margin-top:4px}
+.btn{width:100%;margin-top:1.5rem;padding:.7rem;background:#3b82f6;color:white;
+  border:none;border-radius:8px;font-size:.95rem;font-weight:500;cursor:pointer}
+.btn:hover{background:#2563eb}
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">Ticket<span>Flow</span></span>
+  <div class="links">
+    <a href="/admin/dashboard">Dashboard</a>
+    <a href="/admin/usuarios">Usuarios</a>
+    <a href="/auth/logout">Cerrar sesión</a>
+  </div>
+</nav>
+
+<div class="container">
+  <a class="back" href="/admin/usuarios">← Volver a usuarios</a>
+  <h1>Editar usuario</h1>
+
+  <div class="card">
+    <form method="POST" action="/admin/usuarios/<%= usuario.id %>/editar">
+      <label>Usuario</label>
+      <input type="text" value="<%= usuario.username %>" disabled style="opacity:.5">
+
+      <label>Nombre completo</label>
+      <input type="text" name="nombre" value="<%= usuario.nombre || '' %>" placeholder="Nombre Apellido">
+
+      <label>Email</label>
+      <input type="email" name="email" value="<%= usuario.email || '' %>" placeholder="email@empresa.com">
+
+      <label>Rol</label>
+      <select name="rol">
+        <option value="admin" <%= usuario.rol === 'admin' ? 'selected' : '' %>>Admin</option>
+        <option value="tecnico" <%= usuario.rol === 'tecnico' ? 'selected' : '' %>>Técnico</option>
+      </select>
+
+      <label>Área</label>
+      <select name="area_id">
+        <option value="">Sin área</option>
+        <% areas.forEach(a => { %>
+          <option value="<%= a.id %>" <%= usuario.area_id == a.id ? 'selected' : '' %>><%= a.nombre %></option>
+        <% }) %>
+      </select>
+
+      <label>Nueva contraseña</label>
+      <input type="password" name="password" placeholder="Dejar vacío para no cambiar">
+      <p class="hint">Solo rellena este campo si quieres cambiar la contraseña.</p>
+
+      <button class="btn" type="submit">Guardar cambios</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>
