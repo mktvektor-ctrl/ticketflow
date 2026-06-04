@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title><%= rec.codigo %></title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:800px;margin:2rem auto;padding:0 1rem}
+.card{background:white;border-radius:12px;padding:1.5rem;
+      box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:1rem}
+h1{font-size:1.3rem;margin:0 0 .5rem}
+.meta{color:#64748b;font-size:.85rem}
+.msg{padding:.6rem .75rem;border-radius:8px;margin-bottom:.5rem;background:#f1f5f9}
+.msg .author{font-weight:600;font-size:.8rem;color:#334155}
+.msg .text{font-size:.9rem;margin-top:2px}
+.form-row{display:flex;gap:.5rem;margin-top:1rem}
+.form-row input{flex:1;padding:.6rem .75rem;border:1px solid #ddd;border-radius:8px;font-size:.9rem}
+.form-row button{background:#1a56db;color:white;border:none;border-radius:8px;
+                 padding:.6rem 1rem;cursor:pointer}
+select{padding:.4rem .75rem;border:1px solid #ddd;border-radius:8px;font-size:.9rem;margin-top:.5rem}
+</style>
+</head>
+<body>
+<a href="/reclamaciones/kanban">← Volver</a>
+
+<div class="card" style="margin-top:1rem">
+  <h1><%= rec.titulo %></h1>
+  <div class="meta">
+    <strong><%= rec.codigo %></strong> ·
+    Estado: <strong><%= rec.estado %></strong> ·
+    Prioridad: <strong><%= rec.prioridad %></strong> ·
+    Cliente: <%= rec.cliente %>
+  </div>
+  <p style="margin-top:.75rem;color:#334155"><%= rec.descripcion || 'Sin descripción' %></p>
+  <% if (rec.archivo) { %>
+    <a href="/uploads/<%= rec.archivo %>" target="_blank" style="font-size:.85rem;color:#1a56db">
+      Adjunto
+    </a>
+  <% } %>
+  <% if (currentRol === 'admin' || currentRol === 'tecnico') { %>
+  <form method="POST" action="/reclamaciones/estado" style="margin-top:1rem">
+    <input type="hidden" name="id" value="<%= rec.id %>">
+    <select name="estado" onchange="this.form.submit()">
+      <% ['Nueva','En proceso','Resuelta','Cerrada'].forEach(e => { %>
+        <option value="<%= e %>" <%= rec.estado===e?'selected':'' %>><%= e %></option>
+      <% }) %>
+    </select>
+  </form>
+  <% } %>
+</div>
+
+<div class="card">
+  <strong>Comentarios (<%= comentarios.length %>)</strong>
+  <div style="margin-top:1rem">
+    <% if (comentarios.length===0) { %>
+      <p style="color:#94a3b8;font-size:.85rem">Sin comentarios aún.</p>
+    <% } %>
+    <% comentarios.forEach(c => { %>
+    <div class="msg">
+      <div class="author"><%= c.usuario %> · <%= new Date(c.fecha).toLocaleString('es-ES') %></div>
+      <div class="text"><%= c.mensaje %></div>
+    </div>
+    <% }) %>
+  </div>
+  <form method="POST" action="/reclamaciones/comentario" class="form-row">
+    <input type="hidden" name="id" value="<%= rec.id %>">
+    <input type="text" name="mensaje" placeholder="Escribe un comentario..." required>
+    <button type="submit">Enviar</button>
+  </form>
+</div>
+</body>
+</html>

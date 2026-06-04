@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Áreas</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+nav{background:#1e293b;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #334155}
+nav .brand{color:white;font-weight:700;font-size:1.1rem;letter-spacing:-.02em}
+nav .brand span{color:#3b82f6}
+nav .links a{color:#94a3b8;text-decoration:none;padding:.4rem .75rem;border-radius:6px;font-size:.85rem;transition:all .15s}
+nav .links a:hover{color:white;background:#334155}
+.container{padding:1.5rem 2rem;max-width:900px;margin:0 auto}
+h1{font-size:1.4rem;font-weight:700;color:white;margin-bottom:1.5rem}
+.grid{display:grid;grid-template-columns:1fr 320px;gap:1.5rem}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.5rem}
+.card-title{font-size:.8rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1.25rem}
+label{font-size:.8rem;color:#64748b;display:block;margin-bottom:4px;margin-top:.75rem}
+input,textarea{background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:.5rem .75rem;
+  border-radius:8px;font-size:.88rem;font-family:inherit;width:100%}
+input::placeholder,textarea::placeholder{color:#475569}
+.btn{width:100%;margin-top:1rem;padding:.6rem;background:#3b82f6;color:white;
+  border:none;border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:500}
+.btn:hover{background:#2563eb}
+table{width:100%;border-collapse:collapse}
+th{font-size:.73rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;
+   padding:.6rem 0;text-align:left;border-bottom:1px solid #334155}
+td{padding:.75rem 0;font-size:.88rem;color:#cbd5e1;border-bottom:1px solid #1e293b}
+.btn-sm{padding:3px 12px;background:#3b0000;color:#f87171;border:none;border-radius:6px;cursor:pointer;font-size:.78rem}
+.btn-sm:hover{background:#7f1d1d}
+.empty{color:#475569;font-size:.85rem;padding:1rem 0}
+@media(max-width:768px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">Ticket<span>Flow</span></span>
+  <div class="links">
+    <a href="/admin/dashboard">Dashboard</a>
+    <a href="/admin/areas">Áreas</a>
+    <a href="/admin/usuarios">Usuarios</a>
+    <a href="/reportes">Reportes</a>
+    <a href="/auth/logout">Cerrar sesión</a>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>Gestión de áreas</h1>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">Áreas activas</div>
+      <table>
+        <thead><tr><th>Nombre</th><th>Descripción</th><th></th></tr></thead>
+        <tbody>
+        <% if (areas.length === 0) { %>
+          <tr><td colspan="3" class="empty">No hay áreas creadas</td></tr>
+        <% } %>
+        <% areas.forEach(a => { %>
+        <tr>
+          <td style="font-weight:500;color:white"><%= a.nombre %></td>
+          <td style="color:#64748b"><%= a.descripcion || '—' %></td>
+          <td>
+            <form method="POST" action="/admin/areas/<%= a.id %>/eliminar" style="display:inline">
+              <button class="btn-sm" onclick="return confirm('¿Desactivar esta área?')">Desactivar</button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Nueva área</div>
+      <form method="POST" action="/admin/areas/crear">
+        <label>Nombre *</label>
+        <input type="text" name="nombre" required placeholder="Ej: Atención al cliente">
+        <label>Descripción</label>
+        <textarea name="descripcion" rows="3" placeholder="Descripción del área..."></textarea>
+        <button class="btn" type="submit">Crear área</button>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= ticket.codigo %></title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+nav{background:#1e293b;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #334155}
+nav .brand{color:white;font-weight:700;font-size:1.1rem;letter-spacing:-.02em}
+nav .brand span{color:#3b82f6}
+nav .links a{color:#94a3b8;text-decoration:none;padding:.4rem .75rem;border-radius:6px;font-size:.85rem;transition:all .15s}
+nav .links a:hover{color:white;background:#334155}
+.container{padding:1.5rem 2rem;max-width:1100px;margin:0 auto}
+.back{color:#64748b;text-decoration:none;font-size:.85rem;display:inline-flex;align-items:center;gap:.4rem;margin-bottom:1.25rem}
+.back:hover{color:#94a3b8}
+.grid{display:grid;grid-template-columns:1fr 320px;gap:1.5rem}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+.card-title{font-size:.8rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
+.ticket-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;gap:1rem}
+.ticket-title{font-size:1.2rem;font-weight:600;color:white}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+.meta-item label{font-size:.72rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px}
+.meta-item p{font-size:.88rem;color:#cbd5e1}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500}
+.badge.Nueva{background:#1e3a5f;color:#60a5fa}
+.badge.Asignada{background:#3b2a00;color:#fbbf24}
+.badge.En-proceso{background:#3b1a00;color:#fb923c}
+.badge.Resuelta{background:#064e2a;color:#34d399}
+.badge.Cerrada{background:#1e293b;color:#64748b;border:1px solid #334155}
+.badge.Baja{background:#064e2a;color:#34d399}
+.badge.Media{background:#3b2a00;color:#fbbf24}
+.badge.Alta{background:#3b1a00;color:#fb923c}
+.badge.Crítica{background:#3b0000;color:#f87171}
+.desc{font-size:.88rem;color:#94a3b8;line-height:1.6}
+.historial-item{display:flex;gap:.75rem;margin-bottom:.875rem}
+.dot{width:8px;height:8px;border-radius:50%;background:#3b82f6;margin-top:5px;flex-shrink:0}
+.hist-text{font-size:.84rem;color:#cbd5e1}
+.hist-fecha{font-size:.73rem;color:#475569;margin-top:2px}
+.msg{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem;margin-bottom:.5rem}
+.msg .author{font-size:.75rem;font-weight:600;color:#64748b;margin-bottom:3px}
+.msg .text{font-size:.85rem;color:#cbd5e1}
+textarea,select,input{background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:.5rem .75rem;
+  border-radius:8px;font-size:.88rem;font-family:inherit;width:100%;margin-bottom:.75rem}
+textarea{min-height:80px;resize:vertical}
+select option{background:#1e293b}
+.btn{width:100%;padding:.6rem;border:none;border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:500;margin-bottom:.5rem;transition:all .15s}
+.btn-blue{background:#3b82f6;color:white}.btn-blue:hover{background:#2563eb}
+.btn-red{background:#dc2626;color:white}.btn-red:hover{background:#b91c1c}
+.btn-green{background:#059669;color:white}.btn-green:hover{background:#047857}
+.btn-orange{background:#d97706;color:white}.btn-orange:hover{background:#b45309}
+.adjunto-tag{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .75rem;
+  background:#0f172a;border:1px solid #334155;border-radius:8px;font-size:.8rem;color:#94a3b8;text-decoration:none;margin:.25rem}
+.adjunto-tag:hover{border-color:#3b82f6;color:#60a5fa}
+hr{border:none;border-top:1px solid #334155;margin:1rem 0}
+@media(max-width:768px){.grid{grid-template-columns:1fr}.meta-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">Ticket<span>Flow</span></span>
+  <div class="links">
+    <a href="/admin/dashboard">Dashboard</a>
+    <a href="/admin/areas">Áreas</a>
+    <a href="/admin/usuarios">Usuarios</a>
+    <a href="/reportes">Reportes</a>
+    <a href="/auth/logout">Cerrar sesión</a>
+  </div>
+</nav>
+
+<div class="container">
+  <a class="back" href="/admin/dashboard">← Volver al panel</a>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <div class="ticket-header">
+          <div class="ticket-title"><%= ticket.titulo %></div>
+          <span class="badge <%= ticket.estado.replace(' ','-') %>"><%= ticket.estado %></span>
+        </div>
+        <div class="meta-grid">
+          <div class="meta-item"><label>Código</label><p><%= ticket.codigo %></p></div>
+          <div class="meta-item"><label>Prioridad</label><p><span class="badge <%= ticket.prioridad %>"><%= ticket.prioridad %></span></p></div>
+          <div class="meta-item"><label>Cliente</label><p><%= ticket.nombre_cliente %></p></div>
+          <div class="meta-item"><label>Email</label><p><%= ticket.email_cliente || '—' %></p></div>
+          <div class="meta-item"><label>Teléfono</label><p><%= ticket.telefono_cliente || '—' %></p></div>
+          <div class="meta-item"><label>Área actual</label><p><%= ticket.area_nombre || 'Sin asignar' %></p></div>
+          <div class="meta-item"><label>Fecha creación</label><p><%= new Date(ticket.fecha_creacion).toLocaleString('es-ES') %></p></div>
+          <div class="meta-item"><label>Categoría</label><p><%= ticket.categoria || '—' %></p></div>
+        </div>
+        <div style="margin-bottom:1rem">
+          <label style="font-size:.72rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px">Descripción</label>
+          <p class="desc"><%= ticket.descripcion %></p>
+        </div>
+        <% if (adjuntos && adjuntos.length > 0) { %>
+        <div>
+          <label style="font-size:.72rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px">Adjuntos</label>
+          <div>
+            <% adjuntos.forEach(a => { %>
+            <a href="/uploads/tickets/<%= a.nombre_archivo %>" target="_blank" class="adjunto-tag">
+              <% if (a.tipo && a.tipo.startsWith('image')) { %>🖼
+              <% } else if (a.tipo && a.tipo.startsWith('video')) { %>🎥
+              <% } else if (a.tipo && a.tipo.startsWith('audio')) { %>🎵
+              <% } else { %>📎<% } %>
+              <%= a.nombre_original %>
+            </a>
+            <% }) %>
+          </div>
+        </div>
+        <% } %>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Historial de movimientos</div>
+        <% historial.forEach(h => { %>
+        <div class="historial-item">
+          <div class="dot"></div>
+          <div>
+            <div class="hist-text">
+              <strong style="color:white"><%= h.estado_nuevo %></strong>
+              <% if (h.area_nueva_nombre) { %><span style="color:#64748b"> → </span><%= h.area_nueva_nombre %><% } %>
+              <% if (h.comentario) { %><span style="color:#64748b"> — </span><%= h.comentario %><% } %>
+              <span style="color:#475569"> · <%= h.usuario %></span>
+            </div>
+            <div class="hist-fecha"><%= new Date(h.fecha).toLocaleString('es-ES') %></div>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Comentarios internos</div>
+        <% if (comentarios.length === 0) { %>
+          <p style="color:#475569;font-size:.85rem">Sin comentarios aún.</p>
+        <% } %>
+        <% comentarios.forEach(c => { %>
+        <div class="msg">
+          <div class="author"><%= c.usuario %> · <%= new Date(c.fecha).toLocaleString('es-ES') %></div>
+          <div class="text"><%= c.mensaje %></div>
+        </div>
+        <% }) %>
+        <hr>
+        <form method="POST" action="/admin/ticket/<%= ticket.id %>/comentario">
+          <textarea name="mensaje" placeholder="Añadir comentario interno..." required></textarea>
+          <button class="btn btn-blue" type="submit">Comentar</button>
+        </form>
+      </div>
+    </div>
+
+    <div>
+      <% if (ticket.estado === 'Cerrada' || ticket.estado === 'Resuelta') { %>
+      <div class="card">
+        <div class="card-title">Reabrir ticket</div>
+        <p style="font-size:.85rem;color:#64748b;margin-bottom:1rem">
+          El ticket será devuelto a estado <strong style="color:white">Nueva</strong> y volverá al panel general.
+        </p>
+        <form method="POST" action="/admin/ticket/<%= ticket.id %>/reabrir">
+          <textarea name="comentario" placeholder="Motivo de reapertura..." required></textarea>
+          <button class="btn btn-orange" type="submit">Reabrir ticket</button>
+        </form>
+      </div>
+      <% } else { %>
+      <div class="card">
+        <div class="card-title">Asignar a área</div>
+        <form method="POST" action="/admin/ticket/<%= ticket.id %>/asignar">
+          <select name="area_id" required>
+            <option value="">Selecciona área...</option>
+            <% areas.forEach(a => { %>
+              <option value="<%= a.id %>" <%= ticket.area_actual_id == a.id ? 'selected' : '' %>><%= a.nombre %></option>
+            <% }) %>
+          </select>
+          <textarea name="comentario" placeholder="Comentario (opcional)"></textarea>
+          <button class="btn btn-blue" type="submit">Asignar</button>
+        </form>
+      </div>
+      <div class="card">
+        <div class="card-title">Cerrar ticket</div>
+        <form method="POST" action="/admin/ticket/<%= ticket.id %>/cerrar">
+          <textarea name="comentario" placeholder="Motivo de cierre..." required></textarea>
+          <button class="btn btn-red" type="submit">Cerrar ticket</button>
+        </form>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+</body>
+</html>

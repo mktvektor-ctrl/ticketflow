@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acceso Empleados</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;
+     display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;gap:1rem}
+.card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:2rem;width:380px;max-width:calc(100vw - 2rem)}
+.logo{font-size:1.3rem;font-weight:700;color:white;letter-spacing:-.02em;margin-bottom:.4rem}
+.logo span{color:#3b82f6}
+.subtitle{color:#64748b;font-size:.85rem;margin-bottom:2rem}
+label{display:block;font-size:.78rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;margin-top:1rem}
+label:first-of-type{margin-top:0}
+input{width:100%;padding:.65rem .75rem;background:#0f172a;border:1px solid #334155;
+  color:#e2e8f0;border-radius:8px;font-size:.95rem;transition:border-color .15s}
+input:focus{outline:none;border-color:#8b5cf6}
+input::placeholder{color:#475569}
+button{width:100%;margin-top:1.5rem;padding:.75rem;background:#8b5cf6;color:white;
+       border:none;border-radius:8px;font-size:.95rem;font-weight:500;cursor:pointer;transition:background .15s}
+button:hover{background:#7c3aed}
+.error{background:#3b0000;border:1px solid #7f1d1d;color:#fca5a5;padding:.75rem 1rem;
+       border-radius:8px;margin-bottom:1rem;font-size:.85rem}
+.back{display:inline-flex;align-items:center;gap:.4rem;color:#64748b;text-decoration:none;
+      font-size:.82rem;margin-bottom:1.5rem}
+.back:hover{color:#94a3b8}
+</style>
+</head>
+<body>
+<div class="card">
+  <a class="back" href="/">← Volver al inicio</a>
+  <div class="logo">Ticket<span>Flow</span></div>
+  <p class="subtitle">Acceso para empleados y administradores</p>
+
+  <% if (error) { %>
+    <div class="error"><%= error %></div>
+  <% } %>
+
+  <form method="POST" action="/auth/login">
+    <label>Usuario</label>
+    <input type="text" name="user" required autofocus placeholder="nombre_usuario">
+    <label>Contraseña</label>
+    <input type="password" name="pass" required placeholder="••••••••">
+    <button type="submit">Entrar</button>
+  </form>
+</div>
+<div style="text-align:center;margin-top:2rem;padding-bottom:1rem;width:100%">
+  <p style="font-size:.75rem;color:#334155">
+    Desarrollado por 
+    <a href="https://www.vektormkt.es" target="_blank" style="color:#475569;text-decoration:none">VektorMKT</a> · 
+    <a href="https://www.vektormkt.es" target="_blank" style="color:#475569;text-decoration:none">www.vektormkt.es</a>
+  </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Reclamaciones</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#f8fafc;margin:0;padding:1rem}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+h1{font-size:1.4rem;color:#111}
+nav a{margin-left:1rem;color:#1a56db;text-decoration:none;font-size:.9rem}
+.form-card{background:white;border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;
+           display:flex;gap:.75rem;flex-wrap:wrap;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.form-card input,.form-card textarea,.form-card select{
+  border:1px solid #ddd;border-radius:8px;padding:.5rem .75rem;font-size:.9rem;flex:1;min-width:160px}
+.form-card button{background:#1a56db;color:white;border:none;border-radius:8px;
+                  padding:.5rem 1.25rem;cursor:pointer;white-space:nowrap}
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.col{background:#f1f5f9;border-radius:12px;padding:.75rem;min-height:300px}
+.col h3{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;
+        color:#64748b;margin-bottom:.75rem}
+.card{background:white;border-radius:8px;padding:.75rem;margin-bottom:.5rem;
+      box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card a{text-decoration:none;color:#1a56db;font-weight:500;font-size:.9rem}
+.card .meta{font-size:.75rem;color:#94a3b8;margin-top:4px}
+.badge{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:20px;
+       background:#e0e7ff;color:#4338ca;margin-top:4px}
+.badge.Alta{background:#fee2e2;color:#b91c1c}
+.badge.Media{background:#fef3c7;color:#92400e}
+.badge.Baja{background:#dcfce7;color:#166534}
+@media(max-width:768px){.kanban{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Reclamaciones</h1>
+  <nav>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/logout">Cerrar sesión (<%= currentUser %>)</a>
+  </nav>
+</header>
+
+<form class="form-card" method="POST" action="/reclamaciones/crear" enctype="multipart/form-data">
+  <input type="text" name="titulo" placeholder="Título" required>
+  <textarea name="descripcion" placeholder="Descripción..." rows="1"></textarea>
+  <select name="prioridad">
+    <option value="Baja">Baja</option>
+    <option value="Media" selected>Media</option>
+    <option value="Alta">Alta</option>
+    <option value="Crítica">Crítica</option>
+  </select>
+  <input type="file" name="archivo" accept=".jpg,.jpeg,.png,.pdf">
+  <button type="submit">+ Crear</button>
+</form>
+
+<div class="kanban">
+  <% ["Nueva","En proceso","Resuelta","Cerrada"].forEach(col => { %>
+  <div class="col">
+    <h3><%= col %> (<%= data.filter(r => r.estado === col).length %>)</h3>
+    <% data.filter(r => r.estado === col).forEach(r => { %>
+    <div class="card">
+      <a href="/reclamaciones/<%= r.id %>"><%= r.codigo %></a>
+      <div class="meta"><%= r.titulo.substring(0,40) %><%= r.titulo.length>40?'…':'' %></div>
+      <span class="badge <%= r.prioridad %>"><%= r.prioridad %></span>
+    </div>
+    <% }) %>
+  </div>
+  <% }) %>
+</div>
+</body>
+</html>

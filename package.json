@@ -1,0 +1,27 @@
+{
+  "name": "reclamaciones-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.2",
+    "dotenv": "^17.4.2",
+    "ejs": "^6.0.1",
+    "exceljs": "^4.4.0",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "multer": "^2.1.1",
+    "mysql2": "^3.22.4",
+    "nodemailer": "^8.0.10",
+    "pdfkit": "^0.18.0"
+  }
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nueva Reclamación</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:2rem 1rem}
+.container{max-width:580px;margin:0 auto}
+.logo{font-size:1.2rem;font-weight:700;color:white;letter-spacing:-.02em;margin-bottom:1.5rem;display:block;text-decoration:none}
+.logo span{color:#3b82f6}
+.back{color:#64748b;text-decoration:none;font-size:.85rem;display:inline-flex;align-items:center;gap:.4rem;margin-bottom:1.25rem}
+.back:hover{color:#94a3b8}
+h1{font-size:1.4rem;font-weight:700;color:white;margin-bottom:.4rem}
+.subtitle{color:#64748b;font-size:.88rem;margin-bottom:1.5rem}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.75rem}
+label{display:block;font-size:.78rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;margin-top:1rem}
+label:first-of-type{margin-top:0}
+input,textarea,select{width:100%;padding:.6rem .75rem;background:#0f172a;border:1px solid #334155;
+  color:#e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit;transition:border-color .15s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#3b82f6}
+input::placeholder,textarea::placeholder{color:#475569}
+textarea{resize:vertical;min-height:100px}
+select option{background:#1e293b}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+button{width:100%;margin-top:1.5rem;padding:.75rem;background:#3b82f6;color:white;
+       border:none;border-radius:8px;font-size:.95rem;font-weight:500;cursor:pointer;transition:background .15s}
+button:hover{background:#2563eb}
+.error{background:#3b0000;border:1px solid #7f1d1d;color:#fca5a5;padding:.75rem 1rem;
+       border-radius:8px;margin-bottom:1rem;font-size:.85rem}
+.success{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:2rem;text-align:center}
+.success-icon{font-size:3rem;margin-bottom:1rem}
+.success h2{font-size:1.2rem;color:white;margin-bottom:.5rem}
+.success p{color:#64748b;font-size:.88rem;margin-bottom:.75rem}
+.codigo-box{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1rem;margin:1rem 0}
+.codigo-label{font-size:.73rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+.codigo-val{font-size:1.6rem;font-weight:700;color:#3b82f6;letter-spacing:.05em}
+.success-links{display:flex;gap:.75rem;justify-content:center;margin-top:1rem;flex-wrap:wrap}
+.success-links a{padding:.5rem 1rem;border-radius:8px;font-size:.85rem;text-decoration:none;transition:all .15s}
+.link-primary{background:#3b82f6;color:white}.link-primary:hover{background:#2563eb}
+.link-ghost{background:#1e293b;border:1px solid #334155;color:#94a3b8}.link-ghost:hover{border-color:#475569;color:white}
+.file-hint{font-size:.75rem;color:#475569;margin-top:4px}
+@media(max-width:480px){.grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="logo" href="/">Ticket<span>Flow</span></a>
+  <a class="back" href="/">← Volver al inicio</a>
+  <h1>Presentar reclamación</h1>
+  <p class="subtitle">Rellena el formulario y recibirás un código de seguimiento</p>
+
+  <% if (success) { %>
+  <div class="success">
+    <div class="success-icon">✅</div>
+    <h2>Reclamación registrada</h2>
+    <p>Tu reclamación ha sido registrada correctamente.</p>
+    <div class="codigo-box">
+      <div class="codigo-label">Tu código de seguimiento</div>
+      <div class="codigo-val"><%= success %></div>
+    </div>
+    <p>Guarda este código para consultar el estado en cualquier momento.</p>
+    <div class="success-links">
+      <a href="/consultar" class="link-primary">Consultar estado</a>
+      <a href="/nueva-reclamacion" class="link-ghost">Presentar otra</a>
+    </div>
+  </div>
+  <% } else { %>
+  <div class="card">
+    <% if (error) { %>
+      <div class="error"><%= error %></div>
+    <% } %>
+    <form method="POST" action="/nueva-reclamacion" enctype="multipart/form-data">
+      <div class="grid-2">
+        <div>
+          <label>Nombre completo *</label>
+          <input type="text" name="nombre" required placeholder="Tu nombre">
+        </div>
+        <div>
+          <label>Teléfono móvil *</label>
+          <input type="tel" name="telefono" required placeholder="612 345 678">
+        </div>
+      </div>
+
+      <label>Email *</label>
+      <input type="email" name="email" required placeholder="tu@email.com">
+
+      <label>Título de la reclamación *</label>
+      <input type="text" name="titulo" required placeholder="Describe brevemente el problema">
+
+      <label>Descripción detallada *</label>
+      <textarea name="descripcion" required placeholder="Explica con detalle tu reclamación..."></textarea>
+
+      <div class="grid-2">
+        <div>
+          <label>Categoría</label>
+          <select name="categoria">
+            <option value="General">General</option>
+            <option value="Producto">Producto</option>
+            <option value="Servicio">Servicio</option>
+            <option value="Facturación">Facturación</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div>
+          <label>Prioridad</label>
+          <select name="prioridad">
+            <option value="Baja">Baja</option>
+            <option value="Media" selected>Media</option>
+            <option value="Alta">Alta</option>
+            <option value="Crítica">Crítica</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Archivos adjuntos (opcional)</label>
+      <input type="file" name="archivos" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx">
+      <p class="file-hint">Máximo 5 archivos · 100MB por archivo · Imágenes, vídeos, audios o documentos</p>
+
+      <button type="submit">Enviar reclamación</button>
+    </form>
+  </div>
+  <% } %>
+</div>
+<div style="text-align:center;margin-top:2rem;padding-bottom:1rem">
+  <p style="font-size:.75rem;color:#334155">
+    Desarrollado por 
+    <a href="https://www.vektormkt.es" target="_blank" style="color:#475569;text-decoration:none">VektorMKT</a> · 
+    <a href="https://www.vektormkt.es" target="_blank" style="color:#475569;text-decoration:none">www.vektormkt.es</a>
+  </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Técnico</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+nav{background:#1e293b;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #334155}
+nav .brand{color:white;font-weight:700;font-size:1.1rem;letter-spacing:-.02em}
+nav .brand span{color:#3b82f6}
+nav .right{display:flex;align-items:center;gap:1rem}
+nav .area-tag{background:#1e3a5f;color:#60a5fa;padding:.3rem .75rem;border-radius:6px;font-size:.8rem}
+nav .links a{color:#94a3b8;text-decoration:none;padding:.4rem .75rem;border-radius:6px;font-size:.85rem}
+nav .links a:hover{color:white;background:#334155}
+.container{padding:1.5rem 2rem;max-width:1200px;margin:0 auto}
+h1{font-size:1.4rem;font-weight:700;color:white;margin-bottom:.25rem}
+.subtitle{color:#64748b;font-size:.88rem;margin-bottom:1.5rem}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+.kpi{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.25rem;position:relative;overflow:hidden}
+.kpi .kpi-accent{position:absolute;top:0;left:0;width:3px;height:100%}
+.kpi.red .kpi-accent{background:#ef4444}
+.kpi.blue .kpi-accent{background:#3b82f6}
+.kpi.green .kpi-accent{background:#10b981}
+.kpi .kpi-label{font-size:.75rem;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.kpi .kpi-val{font-size:2rem;font-weight:700}
+.kpi.red .kpi-val{color:#f87171}
+.kpi.blue .kpi-val{color:#60a5fa}
+.kpi.green .kpi-val{color:#34d399}
+.section-title{font-size:.8rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem}
+.table-card{background:#1e293b;border:1px solid #334155;border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
+.table-header{padding:1rem 1.25rem;border-bottom:1px solid #334155;display:flex;justify-content:space-between;align-items:center}
+.table-header h3{font-size:.9rem;font-weight:600;color:white}
+.table-header span{font-size:.8rem;color:#64748b}
+table{width:100%;border-collapse:collapse}
+th{padding:.75rem 1.25rem;text-align:left;font-size:.73rem;color:#64748b;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #334155}
+td{padding:.75rem 1.25rem;font-size:.85rem;color:#cbd5e1;border-bottom:1px solid #1e293b}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#263548}
+a{color:#60a5fa;text-decoration:none}
+a:hover{color:#93c5fd}
+.badge{display:inline-flex;padding:2px 10px;border-radius:20px;font-size:.73rem;font-weight:500}
+.badge.Asignada{background:#3b2a00;color:#fbbf24}
+.badge.En-proceso{background:#3b1a00;color:#fb923c}
+.badge.Resuelta{background:#064e2a;color:#34d399}
+.badge.Cerrada{background:#1e293b;color:#64748b;border:1px solid #334155}
+.badge.Baja{background:#064e2a;color:#34d399}
+.badge.Media{background:#3b2a00;color:#fbbf24}
+.badge.Alta{background:#3b1a00;color:#fb923c}
+.badge.Crítica{background:#3b0000;color:#f87171}
+.horas{font-size:.8rem;color:#64748b}
+.horas.urgente{color:#f87171;font-weight:600}
+@media(max-width:640px){.kpi-grid{grid-template-columns:1fr}.container{padding:1rem}}
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">Ticket<span>Flow</span></span>
+  <div class="right">
+    <span class="area-tag"><%= areaNombre || 'Sin área' %></span>
+    <div class="links">
+      <a href="/auth/logout">Cerrar sesión</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>Mis tickets</h1>
+  <p class="subtitle">Tickets asignados a tu área · <%= currentUser %></p>
+
+  <div class="kpi-grid">
+    <div class="kpi red"><div class="kpi-accent"></div>
+      <div class="kpi-label">Pendientes</div>
+      <div class="kpi-val"><%= stats.pendientes || 0 %></div>
+    </div>
+    <div class="kpi blue"><div class="kpi-accent"></div>
+      <div class="kpi-label">En proceso</div>
+      <div class="kpi-val"><%= stats.en_proceso || 0 %></div>
+    </div>
+    <div class="kpi green"><div class="kpi-accent"></div>
+      <div class="kpi-label">Resueltos</div>
+      <div class="kpi-val"><%= stats.resueltos || 0 %></div>
+    </div>
+  </div>
+
+  <div class="section-title">Tickets pendientes</div>
+  <div class="table-card">
+    <div clas<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Técnico</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+nav{background:#1e293b;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #334155}
+nav .brand{color:white;font-weight:700;font-size:1.1rem;letter-spacing:-.02em}
+nav .brand span{color:#3b82f6}
+nav .right{display:flex;align-items:center;gap:1rem}
+nav .area-tag{background:#1e3a5f;color:#60a5fa;padding:.3rem .75rem;border-radius:6px;font-size:.8rem}
+nav .links a{color:#94a3b8;text-decoration:none;padding:.4rem .75rem;border-radius:6px;font-size:.85rem}
+nav .links a:hover{color:white;background:#334155}
+.container{padding:1.5rem 2rem;max-width:1200px;margin:0 auto}
+h1{font-size:1.4rem;font-weight:700;color:white;margin-bottom:.25rem}
+.subtitle{color:#64748b;font-size:.88rem;margin-bottom:1.5rem}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+.kpi{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.25rem;position:relative;overflow:hidden}
+.kpi .kpi-accent{position:absolute;top:0;left:0;width:3px;height:100%}
+.kpi.red .kpi-accent{background:#ef4444}
+.kpi.blue .kpi-accent{background:#3b82f6}
+.kpi.green .kpi-accent{background:#10b981}
+.kpi .kpi-label{font-size:.75rem;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.kpi .kpi-val{font-size:2rem;font-weight:700}
+.kpi.red .kpi-val{color:#f87171}
+.kpi.blue .kpi-val{color:#60a5fa}
+.kpi.green .kpi-val{color:#34d399}
+.section-title{font-size:.8rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem}
+.table-card{background:#1e293b;border:1px solid #334155;border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
+.table-header{padding:1rem 1.25rem;border-bottom:1px solid #334155;display:flex;justify-content:space-between;align-items:center}
+.table-header h3{font-size:.9rem;font-weight:600;color:white}
+.table-header span{font-size:.8rem;color:#64748b}
+table{width:100%;border-collapse:collapse}
+th{padding:.75rem 1.25rem;text-align:left;font-size:.73rem;color:#64748b;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #334155}
+td{padding:.75rem 1.25rem;font-size:.85rem;color:#cbd5e1;border-bottom:1px solid #1e293b}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#263548}
+a{color:#60a5fa;text-decoration:none}
+a:hover{color:#93c5fd}
+.badge{display:inline-flex;padding:2px 10px;border-radius:20px;font-size:.73rem;font-weight:500}
+.badge.Asignada{background:#3b2a00;color:#fbbf24}
+.badge.En-proceso{background:#3b1a00;color:#fb923c}
+.badge.Resuelta{background:#064e2a;color:#34d399}
+.badge.Cerrada{background:#1e293b;color:#64748b;border:1px solid #334155}
+.badge.Baja{background:#064e2a;color:#34d399}
+.badge.Media{background:#3b2a00;color:#fbbf24}
+.badge.Alta{background:#3b1a00;color:#fb923c}
+.badge.Crítica{background:#3b0000;color:#f87171}
+.horas{font-size:.8rem;color:#64748b}
+.horas.urgente{color:#f87171;font-weight:600}
+@media(max-width:640px){.kpi-grid{grid-template-columns:1fr}.container{padding:1rem}}
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">Ticket<span>Flow</span></span>
+  <div class="right">
+    <span class="area-tag"><%= areaNombre || 'Sin área' %></span>
+    <div class="links">
+      <a href="/auth/logout">Cerrar sesión</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>Mis tickets</h1>
+  <p class="subtitle">Tickets asignados a tu área · <%= currentUser %></p>
+
+  <div class="kpi-grid">
+    <div class="kpi red"><div class="kpi-accent"></div>
+      <div class="kpi-label">Pendientes</div>
+      <div class="kpi-val"><%= stats.pendientes || 0 %></div>
+    </div>
+    <div class="kpi blue"><div class="kpi-accent"></div>
+      <div class="kpi-label">En proceso</div>
+      <div class="kpi-val"><%= stats.en_proceso || 0 %></div>
+    </div>
+    <div class="kpi green"><div class="kpi-accent"></div>
+      <div class="kpi-label">Resueltos</div>
+      <div class="kpi-val"><%= stats.resueltos || 0 %></div>
+    </div>
+  </div>
+
+  <div class="section-title">Tickets pendientes</div>
+  <div class="table-card">
+    <div class="table-header">
+      <h3>Pendientes</h3>
+      <span><%= pendientes.length %> tickets</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Título</th>
+          <th>Cliente</th>
+          <th>Prioridad</th>
+          <th>Estado</th>
+          <th>Tiempo abierto</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      <% if (pendientes.length === 0) { %>
+        <tr><td colspan="7" style="text-align:center;color:#475569;padding:2rem">No tienes tickets pendientes</td></tr>
+      <% } %>
+      <% pendientes.forEach(t => { %>
+      <tr>
+        <td style="color:#60a5fa;font-weight:500"><%= t.codigo %></td>
+        <td><%= t.titulo.substring(0,35) %><%= t.titulo.length>35?'…':'' %></td>
+        <td><%= t.nombre_cliente %></td>
+        <td><span class="badge <%= t.prioridad %>"><%= t.prioridad %></span></td>
+        <td><span class="badge <%= t.estado.replace(' ','-') %>"><%= t.estado %></span></td>
+        <td class="horas <%= t.horas_abierto > 48 ? 'urgente' : '' %>"><%= t.horas_abierto %>h</td>
+        <td><a href="/tecnico/ticket/<%= t.id %>">Ver →</a></td>
+      </tr>
+      <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Tickets gestionados anteriormente</div>
+  <div class="table-card">
+    <div class="table-header">
+      <h3>Historial</h3>
+      <span><%= gestionados.length %> tickets</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Título</th>
+          <th>Estado</th>
+          <th>Tiempo total</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% if (gestionados.length === 0) { %>
+        <tr><td colspan="4" style="text-align:center;color:#475569;padding:2rem">Sin tickets gestionados aún</td></tr>
+      <% } %>
+      <% gestionados.forEach(t => { %>
+      <tr>
+        <td style="color:#60a5fa;font-weight:500"><%= t.codigo %></td>
+        <td><%= t.titulo.substring(0,40) %><%= t.titulo.length>40?'…':'' %></td>
+        <td><span class="badge <%= t.estado.replace(' ','-') %>"><%= t.estado %></span></td>
+        <td class="horas"><%= t.horas_total %>h</td>
+      </tr>
+      <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

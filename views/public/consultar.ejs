@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consultar Estado</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:2rem 1rem}
+.container{max-width:580px;margin:0 auto}
+.logo{font-size:1.2rem;font-weight:700;color:white;letter-spacing:-.02em;margin-bottom:1.5rem;display:block;text-decoration:none}
+.logo span{color:#3b82f6}
+.back{color:#64748b;text-decoration:none;font-size:.85rem;display:inline-flex;align-items:center;gap:.4rem;margin-bottom:1.25rem}
+.back:hover{color:#94a3b8}
+h1{font-size:1.4rem;font-weight:700;color:white;margin-bottom:.4rem}
+.subtitle{color:#64748b;font-size:.88rem;margin-bottom:1.5rem}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+.search{display:flex;gap:.75rem}
+.search input{flex:1;padding:.6rem .75rem;background:#0f172a;border:1px solid #334155;
+  color:#e2e8f0;border-radius:8px;font-size:.9rem;transition:border-color .15s}
+.search input:focus{outline:none;border-color:#3b82f6}
+.search input::placeholder{color:#475569}
+.search button{padding:.6rem 1.25rem;background:#3b82f6;color:white;border:none;
+  border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:500;white-space:nowrap}
+.search button:hover{background:#2563eb}
+.error{background:#3b0000;border:1px solid #7f1d1d;color:#fca5a5;padding:.75rem 1rem;
+       border-radius:8px;margin-top:1rem;font-size:.85rem}
+.ticket-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;gap:1rem}
+.ticket-title{font-size:1.1rem;font-weight:600;color:white}
+.badge{display:inline-flex;padding:3px 12px;border-radius:20px;font-size:.78rem;font-weight:500}
+.badge.Nueva{background:#1e3a5f;color:#60a5fa}
+.badge.Asignada{background:#3b2a00;color:#fbbf24}
+.badge.En-proceso{background:#3b1a00;color:#fb923c}
+.badge.Resuelta{background:#064e2a;color:#34d399}
+.badge.Cerrada{background:#1e293b;color:#64748b;border:1px solid #334155}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem}
+.meta-item label{font-size:.72rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px}
+.meta-item p{font-size:.88rem;color:#cbd5e1}
+.desc-label{font-size:.72rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px}
+.desc{font-size:.88rem;color:#94a3b8;line-height:1.6}
+.hist-title{font-size:.8rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
+.historial-item{display:flex;gap:.75rem;margin-bottom:.875rem}
+.dot{width:8px;height:8px;border-radius:50%;background:#3b82f6;margin-top:4px;flex-shrink:0}
+.hist-text{font-size:.84rem;color:#cbd5e1}
+.hist-fecha{font-size:.73rem;color:#475569;margin-top:2px}
+@media(max-width:480px){.meta-grid{grid-template-columns:1fr}.search{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="logo" href="/">Ticket<span>Flow</span></a>
+  <a class="back" href="/">← Volver al inicio</a>
+  <h1>Consultar estado</h1>
+  <p class="subtitle">Introduce tu código de seguimiento para ver el estado de tu reclamación</p>
+
+  <div class="card">
+    <form method="POST" action="/consultar" class="search">
+      <input type="text" name="codigo" placeholder="Ej: REC-12345678" required
+             value="<%= ticket ? ticket.codigo : '' %>">
+      <button type="submit">Buscar</button>
+    </form>
+    <% if (error) { %>
+      <div class="error"><%= error %></div>
+    <% } %>
+  </div>
+
+  <% if (ticket) { %>
+  <div class="card">
+    <div class="ticket-header">
+      <div class="ticket-title"><%= ticket.titulo %></div>
+      <span class="badge <%= ticket.estado.replace(' ','-') %>"><%= ticket.estado %></span>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item"><label>Código</label><p><%= ticket.codigo %></p></div>
+      <div class="meta-item"><label>Prioridad</label><p><%= ticket.prioridad %></p></div>
+      <div class="meta-item"><label>Fecha de registro</label><p><%= new Date(ticket.fecha_creacion).toLocaleString('es-ES') %></p></div>
+      <div class="meta-item"><label>Área actual</label><p><%= ticket.area_nombre || 'Sin asignar' %></p></div>
+    </div>
+    <span class="desc-label">Descripción</span>
+    <p class="desc"><%= ticket.descripcion %></p>
+  </div>
+
+  <div class="card">
+    <div class="hist-title">Historial de seguimiento</div>
+    <% historial.forEach(h => { %>
+    <div class="historial-item">
+      <div class="dot"></div>
+      <div>
+        <div class="hist-text">
+          <strong style="color:white"><%= h.estado_nuevo %></strong>
+          <% if (h.comentario) { %><span style="color:#64748b"> — </span><%= h.comentario %><% } %>
+        </div>
+        <div class="hist-fecha"><%= new Date(h.fecha).toLocaleString('es-ES') %></div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+  <% } %>
+</div>
+<div style="text-align:center;margin-top:2rem;padding-bottom:1rem">
+  <p style="font-size:.75rem;color:#334155">
+    Desarrollado por 
+    <a href="https://www.vektormkt.es" target="_blank" style="color:#475569;text-decoration:none">VektorMKT</a> · 
+    <a href="https://www.vektormkt.es" target="_blank" style="color:#475569;text-decoration:none">www.vektormkt.es</a>
+  </p>
+</div>
+</body>
+</html>
