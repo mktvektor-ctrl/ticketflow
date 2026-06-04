@@ -29,7 +29,7 @@ function footer() {
     return `
         <p style="color:#94a3b8;font-size:.78rem;margin:1.5rem 0 0;border-top:1px solid #e2e8f0;padding-top:1rem">
             Este mensaje ha sido enviado automáticamente. Por favor no respondas a este email.<br>
-            🌐 <a href="https://www.ticketflow.es" style="color:#94a3b8">www.ticketflow.es</a> · 
+            🌐 <a href="https://reclamaciones.vektormkt.es" style="color:#94a3b8">reclamaciones.vektormkt.es</a> · 
             📞 <a href="tel:+34123456789" style="color:#94a3b8;text-decoration:none">+34 123 456 789</a><br>
             Desarrollado por <a href="https://www.vektormkt.es" style="color:#94a3b8">VektorMKT</a>
         </p>
@@ -61,7 +61,7 @@ function contactBox() {
     return `
         <div style="background:#f8fafc;border-radius:8px;padding:1rem;margin:1.5rem 0">
             <p style="margin:0 0 .5rem;font-size:.85rem;color:#334155"><strong>Consultar estado de tu reclamación:</strong></p>
-            <p style="margin:0;font-size:.85rem;color:#1a56db">🌐 <a href="https://www.ticketflow.es" style="color:#1a56db">www.ticketflow.es</a></p>
+            <p style="margin:0;font-size:.85rem;color:#1a56db">🌐 <a href="https://reclamaciones.vektormkt.es" style="color:#1a56db">reclamaciones.vektormkt.es</a></p>
             <p style="margin:.4rem 0 0;font-size:.85rem;color:#334155">📞 <a href="tel:+34123456789" style="color:#334155;text-decoration:none">+34 123 456 789</a></p>
         </div>
     `;
