@@ -1,11 +1,12 @@
-require('dotenv').config();
-const transporter = require('../config/mail');
+const { Resend } = require('resend');
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendEmail(to, subject, html) {
     if (!to) return;
     try {
-        await transporter.sendMail({
-            from: `"TicketFlow" <${process.env.MAIL_USER}>`,
+        await resend.emails.send({
+            from: 'TicketFlow <no-reply@vektormkt.es>',
             to,
             subject,
             html

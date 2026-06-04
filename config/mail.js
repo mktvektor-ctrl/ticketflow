@@ -1,14 +1,2 @@
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
-const nodemailer = require('nodemailer');
-
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS
-    }
-});
-
-module.exports = transporter;
+// Email ahora gestionado por Resend en utils/email.js
+module.exports = {};
