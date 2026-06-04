@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
                 SUM(estado = 'En proceso') AS proceso,
                 SUM(estado = 'Resuelta')   AS resueltas,
                 SUM(estado = 'Cerrada')    AS cerradas,
-                SUM(prioridad = 'Crítica') AS criticas
+                SUM(prioridad = 'Critica') AS criticas
             FROM reclamaciones
         `);
 

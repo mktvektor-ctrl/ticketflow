@@ -88,7 +88,7 @@ a:hover{color:#93c5fd}
 .badge.Baja{background:#064e2a;color:#34d399}
 .badge.Media{background:#3b2a00;color:#fbbf24}
 .badge.Alta{background:#3b1a00;color:#fb923c}
-.badge.Crítica{background:#3b0000;color:#f87171}
+.badge.Critica{background:#3b0000;color:#f87171}
 
 .horas{font-size:.8rem;color:#64748b}
 .horas.urgente{color:#f87171;font-weight:600}
@@ -202,7 +202,7 @@ a:hover{color:#93c5fd}
       <label>Prioridad</label>
       <select name="prioridad">
         <option value="">Todas</option>
-        <% ['Baja','Media','Alta','Crítica'].forEach(p => { %>
+        <% ['Baja','Media','Alta','Critica'].forEach(p => { %>
           <option value="<%= p %>" <%= filtros.prioridad === p ? 'selected' : '' %>><%= p %></option>
         <% }) %>
       </select>
@@ -285,7 +285,7 @@ a:hover{color:#93c5fd}
           <label style="font-size:.75rem;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase">Prioridad</label>
           <select name="prioridad" style="width:100%;padding:.5rem;background:#0f172a;border:1px solid #334155;color:#e2e8f0;border-radius:8px;font-size:.88rem">
             <option value="">Todas</option>
-            <% ['Baja','Media','Alta','Crítica'].forEach(p => { %>
+            <% ['Baja','Media','Alta','Critica'].forEach(p => { %>
               <option value="<%= p %>"><%= p %></option>
             <% }) %>
           </select>
