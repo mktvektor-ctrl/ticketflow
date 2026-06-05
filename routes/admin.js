@@ -107,7 +107,7 @@ router.get('/dashboard', async (req, res) => {
         res.status(500).send('Error cargando dashboard');
     }
 });
-
+//
 // Ver detalle de ticket
 router.get('/ticket/:id', async (req, res) => {
     try {
