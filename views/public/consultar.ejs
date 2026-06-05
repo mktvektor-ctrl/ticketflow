@@ -17,12 +17,11 @@ h1{font-size:1.4rem;font-weight:700;color:white;margin-bottom:.4rem}
 .card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.5rem;margin-bottom:1rem}
 .search{display:flex;gap:.75rem}
 .search input{flex:1;padding:.6rem .75rem;background:#0f172a;border:1px solid #334155;
-  color:#e2e8f0;border-radius:8px;font-size:.9rem;transition:border-color .15s}
+  color:#e2e8f0;border-radius:8px;font-size:.9rem}
 .search input:focus{outline:none;border-color:#3b82f6}
 .search input::placeholder{color:#475569}
 .search button{padding:.6rem 1.25rem;background:#3b82f6;color:white;border:none;
-  border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:500;white-space:nowrap}
-.search button:hover{background:#2563eb}
+  border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:500}
 .error{background:#3b0000;border:1px solid #7f1d1d;color:#fca5a5;padding:.75rem 1rem;
        border-radius:8px;margin-top:1rem;font-size:.85rem}
 .ticket-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;gap:1rem}
@@ -41,8 +40,26 @@ h1{font-size:1.4rem;font-weight:700;color:white;margin-bottom:.4rem}
 .hist-title{font-size:.8rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
 .historial-item{display:flex;gap:.75rem;margin-bottom:.875rem}
 .dot{width:8px;height:8px;border-radius:50%;background:#3b82f6;margin-top:4px;flex-shrink:0}
+.dot.cliente{background:#10b981}
 .hist-text{font-size:.84rem;color:#cbd5e1}
 .hist-fecha{font-size:.73rem;color:#475569;margin-top:2px}
+.resolucion-box{background:#064e2a;border:1px solid #10b981;border-radius:8px;padding:.75rem 1rem;margin-top:.5rem;font-size:.85rem;color:#34d399}
+.msg{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem;margin-bottom:.5rem}
+.msg.cliente{border-color:#1d4ed8}
+.msg .author{font-size:.75rem;font-weight:600;color:#64748b;margin-bottom:3px}
+.msg.cliente .author{color:#60a5fa}
+.msg .text{font-size:.85rem;color:#cbd5e1}
+textarea,input[type="file"]{background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:.5rem .75rem;
+  border-radius:8px;font-size:.88rem;font-family:inherit;width:100%;margin-bottom:.75rem}
+textarea{min-height:80px;resize:vertical}
+.btn{width:100%;padding:.6rem;border:none;border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:500;margin-bottom:.5rem}
+.btn-blue{background:#3b82f6;color:white}
+.btn-red{background:#dc2626;color:white}
+.adjunto-tag{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .75rem;
+  background:#0f172a;border:1px solid #334155;border-radius:8px;font-size:.8rem;color:#94a3b8;text-decoration:none;margin:.25rem}
+.adjunto-tag:hover{border-color:#3b82f6;color:#60a5fa}
+.alert-no-resuelto{background:#3b1a00;border:1px solid #fb923c;border-radius:10px;padding:1rem;margin-bottom:1rem}
+.alert-no-resuelto p{font-size:.85rem;color:#fed7aa;margin-bottom:.75rem}
 @media(max-width:480px){.meta-grid{grid-template-columns:1fr}.search{flex-direction:column}}
 </style>
 </head>
@@ -78,13 +95,67 @@ h1{font-size:1.4rem;font-weight:700;color:white;margin-bottom:.4rem}
     </div>
     <span class="desc-label">Descripción</span>
     <p class="desc"><%= ticket.descripcion %></p>
+
+    <% if (ticket.adjuntos && ticket.adjuntos.length > 0) { %>
+    <div style="margin-top:1rem">
+      <span class="desc-label">Adjuntos</span>
+      <% ticket.adjuntos.forEach(a => { %>
+      <a href="/uploads/tickets/<%= a.nombre_archivo %>" target="_blank" class="adjunto-tag">
+        📎 <%= a.nombre_original %>
+      </a>
+      <% }) %>
+    </div>
+    <% } %>
   </div>
+
+  <% if (ticket.estado === 'Resuelta' || ticket.estado === 'Cerrada') { %>
+  <div class="card">
+    <div class="alert-no-resuelto">
+      <p>¿El problema no ha sido resuelto correctamente? Puedes indicarlo y el equipo lo revisará de nuevo.</p>
+      <form method="POST" action="/ticket/responder">
+        <input type="hidden" name="codigo" value="<%= ticket.codigo %>">
+        <input type="hidden" name="no_resuelto" value="si">
+        <textarea name="mensaje" placeholder="Explica por qué no está resuelto..." required></textarea>
+        <button class="btn btn-red" type="submit">No está resuelto — reabrir</button>
+      </form>
+    </div>
+  </div>
+  <% } %>
+
+  <div class="card">
+    <div class="hist-title">Añadir información o comentario</div>
+    <form method="POST" action="/ticket/responder">
+      <input type="hidden" name="codigo" value="<%= ticket.codigo %>">
+      <textarea name="mensaje" placeholder="Añade información adicional, documentos solicitados o comentarios..."></textarea>
+      <button class="btn btn-blue" type="submit">Enviar comentario</button>
+    </form>
+    <div style="margin-top:1rem;border-top:1px solid #334155;padding-top:1rem">
+      <div class="hist-title" style="margin-bottom:.75rem">Adjuntar archivos</div>
+      <form method="POST" action="/ticket/adjuntar" enctype="multipart/form-data">
+        <input type="hidden" name="codigo" value="<%= ticket.codigo %>">
+        <input type="file" name="archivos" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx">
+        <button class="btn btn-blue" type="submit" style="margin-top:.5rem">Subir archivos</button>
+      </form>
+    </div>
+  </div>
+
+  <% if (comentarios && comentarios.length > 0) { %>
+  <div class="card">
+    <div class="hist-title">Comunicaciones</div>
+    <% comentarios.forEach(c => { %>
+    <div class="msg <%= c.es_cliente ? 'cliente' : '' %>">
+      <div class="author"><%= c.es_cliente ? 'Tú' : 'Equipo técnico' %> · <%= new Date(c.fecha).toLocaleString('es-ES') %></div>
+      <div class="text"><%= c.mensaje %></div>
+    </div>
+    <% }) %>
+  </div>
+  <% } %>
 
   <div class="card">
     <div class="hist-title">Historial de seguimiento</div>
     <% historial.forEach(h => { %>
     <div class="historial-item">
-      <div class="dot"></div>
+      <div class="dot <%= h.usuario === 'cliente' ? 'cliente' : '' %>"></div>
       <div>
         <div class="hist-text">
           <strong style="color:white"><%= h.estado_nuevo %></strong>
@@ -93,7 +164,7 @@ h1{font-size:1.4rem;font-weight:700;color:white;margin-bottom:.4rem}
           <% } %>
         </div>
         <% if (h.estado_nuevo === 'Resuelta' || h.estado_nuevo === 'Cerrada') { %>
-        <div style="background:#f1f5f9;border-radius:6px;padding:.5rem .75rem;margin-top:.4rem;font-size:.82rem;color:#334155">
+        <div style="background:#064e2a;border-radius:6px;padding:.5rem .75rem;margin-top:.4rem;font-size:.82rem;color:#34d399">
           <%= h.comentario || 'Ticket gestionado por el equipo técnico' %>
         </div>
         <% } %>
@@ -103,13 +174,14 @@ h1{font-size:1.4rem;font-weight:700;color:white;margin-bottom:.4rem}
     <% }) %>
   </div>
   <% } %>
-</div>
-<div style="text-align:center;margin-top:2rem;padding-bottom:1rem">
-  <p style="font-size:.75rem;color:#334155">
-    Desarrollado por 
-    <a href="https://www.vektormkt.es" target="_blank" style="color:#475569;text-decoration:none">VektorMKT</a> · 
-    <a href="https://www.vektormkt.es" target="_blank" style="color:#475569;text-decoration:none">www.vektormkt.es</a>
-  </p>
+
+  <div style="text-align:center;margin-top:2rem;padding-bottom:1rem">
+    <p style="font-size:.75rem;color:#334155">
+      Desarrollado por 
+      <a href="https://www.vektormkt.es" target="_blank" style="color:#475569;text-decoration:none">VektorMKT</a> · 
+      <a href="https://www.vektormkt.es" target="_blank" style="color:#475569;text-decoration:none">www.vektormkt.es</a>
+    </p>
+  </div>
 </div>
 </body>
 </html>
