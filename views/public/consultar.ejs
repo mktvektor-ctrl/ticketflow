@@ -88,8 +88,15 @@ h1{font-size:1.4rem;font-weight:700;color:white;margin-bottom:.4rem}
       <div>
         <div class="hist-text">
           <strong style="color:white"><%= h.estado_nuevo %></strong>
-          <% if (h.comentario) { %><span style="color:#64748b"> — </span><%= h.comentario %><% } %>
+          <% if (h.comentario) { %>
+            <span style="color:#64748b"> — </span><%= h.comentario %>
+          <% } %>
         </div>
+        <% if (h.estado_nuevo === 'Resuelta' || h.estado_nuevo === 'Cerrada') { %>
+        <div style="background:#f1f5f9;border-radius:6px;padding:.5rem .75rem;margin-top:.4rem;font-size:.82rem;color:#334155">
+          <%= h.comentario || 'Ticket gestionado por el equipo técnico' %>
+        </div>
+        <% } %>
         <div class="hist-fecha"><%= new Date(h.fecha).toLocaleString('es-ES') %></div>
       </div>
     </div>

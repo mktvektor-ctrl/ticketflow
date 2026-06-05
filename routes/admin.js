@@ -112,9 +112,10 @@ router.get('/dashboard', async (req, res) => {
 router.get('/ticket/:id', async (req, res) => {
     try {
         const [[ticket]] = await db.execute(`
-            SELECT t.*, a.nombre as area_nombre
+            SELECT t.*, a.nombre as area_nombre, u.nombre as asignado_nombre, u.username as asignado_username
             FROM tickets t
             LEFT JOIN areas a ON t.area_actual_id = a.id
+            LEFT JOIN usuarios u ON t.asignado_a = u.id
             WHERE t.id = ?`, [req.params.id]);
 
         if (!ticket) return res.status(404).send('Ticket no encontrado');
@@ -144,15 +145,15 @@ router.get('/ticket/:id', async (req, res) => {
 
 // Asignar ticket a área
 router.post('/ticket/:id/asignar', async (req, res) => {
-    const { area_id, comentario } = req.body;
+    const { area_id, usuario_id, comentario } = req.body;
     const id = req.params.id;
 
     try {
         const [[ticket]] = await db.execute('SELECT * FROM tickets WHERE id = ?', [id]);
 
         await db.execute(
-            `UPDATE tickets SET estado = 'Asignada', area_actual_id = ? WHERE id = ?`,
-            [area_id, id]
+            `UPDATE tickets SET estado = 'Asignada', area_actual_id = ?, asignado_a = ? WHERE id = ?`,
+            [area_id, usuario_id || null, id]
         );
 
         await db.execute(
@@ -178,7 +179,6 @@ router.post('/ticket/:id/asignar', async (req, res) => {
         res.status(500).send('Error asignando ticket');
     }
 });
-
 // Cerrar ticket
 router.post('/ticket/:id/cerrar', async (req, res) => {
     const { comentario } = req.body;
@@ -332,6 +332,18 @@ router.post('/usuarios/:id/editar', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Error actualizando usuario');
+    }
+});
+router.get('/tecnicos-por-area/:area_id', async (req, res) => {
+    try {
+        const [tecnicos] = await db.execute(
+            'SELECT id, username, nombre FROM usuarios WHERE area_id = ? AND activo = 1 AND rol = ?',
+            [req.params.area_id, 'tecnico']
+        );
+        res.json(tecnicos);
+    } catch (err) {
+        console.error(err);
+        res.json([]);
     }
 });
 module.exports = router;

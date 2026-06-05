@@ -86,6 +86,7 @@ hr{border:none;border-top:1px solid #334155;margin:1rem 0}
           <div class="meta-item"><label>Email</label><p><%= ticket.email_cliente || '—' %></p></div>
           <div class="meta-item"><label>Teléfono</label><p><%= ticket.telefono_cliente || '—' %></p></div>
           <div class="meta-item"><label>Área actual</label><p><%= ticket.area_nombre || 'Sin asignar' %></p></div>
+          <div class="meta-item"><label>Asignado a</label><p><%= ticket.asignado_nombre || 'Sin asignar' %></p></div>
           <div class="meta-item"><label>Fecha creación</label><p><%= new Date(ticket.fecha_creacion).toLocaleString('es-ES') %></p></div>
           <div class="meta-item"><label>Categoría</label><p><%= ticket.categoria || '—' %></p></div>
         </div>
@@ -164,11 +165,14 @@ hr{border:none;border-top:1px solid #334155;margin:1rem 0}
       <div class="card">
         <div class="card-title">Asignar a área</div>
         <form method="POST" action="/admin/ticket/<%= ticket.id %>/asignar">
-          <select name="area_id" required>
+          <select name="area_id" id="select-area" required onchange="cargarTecnicos(this.value)">
             <option value="">Selecciona área...</option>
             <% areas.forEach(a => { %>
               <option value="<%= a.id %>" <%= ticket.area_actual_id == a.id ? 'selected' : '' %>><%= a.nombre %></option>
             <% }) %>
+          </select>
+          <select name="usuario_id" id="select-tecnico" style="margin-top:.5rem">
+            <option value="">Sin asignar a persona</option>
           </select>
           <textarea name="comentario" placeholder="Comentario (opcional)"></textarea>
           <button class="btn btn-blue" type="submit">Asignar</button>
@@ -185,5 +189,20 @@ hr{border:none;border-top:1px solid #334155;margin:1rem 0}
     </div>
   </div>
 </div>
+<script>
+async function cargarTecnicos(areaId) {
+    const select = document.getElementById('select-tecnico');
+    select.innerHTML = '<option value="">Sin asignar a persona</option>';
+    if (!areaId) return;
+    const res = await fetch(`/admin/tecnicos-por-area/${areaId}`);
+    const tecnicos = await res.json();
+    tecnicos.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.id;
+        opt.textContent = t.nombre || t.username;
+        select.appendChild(opt);
+    });
+}
+</script>
 </body>
 </html>

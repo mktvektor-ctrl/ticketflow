@@ -94,7 +94,7 @@ function emailEstadoCambiado(codigo, nombre, email, estadoNuevo, comentario) {
         <div style="background:#f1f5f9;border-radius:10px;padding:1.25rem;margin:1.5rem 0;text-align:center">
             <p style="margin:0;font-size:.8rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em">Estado actual</p>
             <p style="margin:.5rem 0 0;font-size:1.4rem;font-weight:700;color:${color}">${estadoNuevo}</p>
-            ${comentario ? `<p style="margin:.75rem 0 0;font-size:.85rem;color:#64748b;font-style:italic">"${comentario}"</p>` : ''}
+           <p style="margin:.75rem 0 0;font-size:.85rem;color:#64748b;font-style:italic">"${comentario || 'Sin comentarios adicionales'}"</p>
         </div>
         ${contactBox()}
     `));
