@@ -127,7 +127,7 @@ router.get('/ticket/:id', async (req, res) => {
              LEFT JOIN areas a2 ON h.area_nueva_id = a2.id
              WHERE h.ticket_id = ? ORDER BY h.fecha ASC`, [ticket.id]);
 
-        const [comentarios]  = await db.execute(
+        const [comentarios] = await db.execute(
             'SELECT * FROM comentarios WHERE ticket_id = ? ORDER BY fecha ASC', [ticket.id]);
 
         const [adjuntos] = await db.execute(
@@ -211,12 +211,37 @@ router.post('/ticket/:id/cerrar', async (req, res) => {
 
 // Añadir comentario
 router.post('/ticket/:id/comentario', async (req, res) => {
-    const { mensaje } = req.body;
+    const { mensaje, enviar_cliente } = req.body;
     try {
+        const es_interno = enviar_cliente === 'si' ? 0 : 1;
+
         await db.execute(
-            'INSERT INTO comentarios (ticket_id, usuario, mensaje, es_interno) VALUES (?, ?, ?, 1)',
-            [req.params.id, req.session.user, mensaje]
+            'INSERT INTO comentarios (ticket_id, usuario, mensaje, es_interno, es_cliente) VALUES (?, ?, ?, ?, 0)',
+            [req.params.id, req.session.user, mensaje, es_interno]
         );
+
+        if (enviar_cliente === 'si') {
+            const [[ticket]] = await db.execute('SELECT * FROM tickets WHERE id = ?', [req.params.id]);
+            if (ticket.email_cliente) {
+                const { sendEmail } = require('../utils/email');
+                sendEmail(ticket.email_cliente, `Mensaje sobre tu reclamación ${ticket.codigo}`, `
+                    <div style="font-family:system-ui,sans-serif;max-width:600px;margin:0 auto">
+                        <div style="background:#0f172a;padding:1.5rem 2rem;border-radius:12px 12px 0 0">
+                            <h1 style="color:white;font-size:1.3rem;margin:0">Ticket<span style="color:#3b82f6">Flow</span></h1>
+                        </div>
+                        <div style="background:white;padding:2rem;border:1px solid #e2e8f0;border-radius:0 0 12px 12px">
+                            <h2 style="color:#111;font-size:1rem;margin:0 0 1rem">El equipo técnico te ha enviado un mensaje</h2>
+                            <p style="color:#334155;margin:0 0 1rem">Reclamación: <strong>${ticket.codigo}</strong></p>
+                            <div style="background:#f1f5f9;border-radius:8px;padding:1rem;margin:1rem 0;font-size:.9rem;color:#334155">
+                                ${mensaje}
+                            </div>
+                            <p style="font-size:.85rem;color:#64748b">Puedes responder en: <a href="https://reclamaciones.vektormkt.es/consultar?codigo=${ticket.codigo}">reclamaciones.vektormkt.es</a></p>
+                        </div>
+                    </div>
+                `);
+            }
+        }
+
         res.redirect('/admin/ticket/' + req.params.id);
     } catch (err) {
         console.error(err);

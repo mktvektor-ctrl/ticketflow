@@ -136,14 +136,29 @@ hr{border:none;border-top:1px solid #334155;margin:1rem 0}
           <p style="color:#475569;font-size:.85rem">Sin comentarios aún.</p>
         <% } %>
         <% comentarios.forEach(c => { %>
-        <div class="msg">
-          <div class="author"><%= c.usuario %> · <%= new Date(c.fecha).toLocaleString('es-ES') %></div>
+        <div class="msg" style="<%= c.es_cliente ? 'border-left:3px solid #3b82f6' : c.es_interno ? '' : 'border-left:3px solid #10b981' %>">
+          <div class="author">
+            <% if (c.es_cliente) { %>
+              👤 <strong style="color:#60a5fa">Cliente</strong> · <%= new Date(c.fecha).toLocaleString('es-ES') %>
+            <% } else if (!c.es_interno) { %>
+              📤 <strong style="color:#34d399">Enviado al cliente</strong> · <%= c.usuario %> · <%= new Date(c.fecha).toLocaleString('es-ES') %>
+            <% } else { %>
+              🔒 Interno · <%= c.usuario %> · <%= new Date(c.fecha).toLocaleString('es-ES') %>
+            <% } %>
+          </div>
           <div class="text"><%= c.mensaje %></div>
         </div>
         <% }) %>
         <hr>
         <form method="POST" action="/admin/ticket/<%= ticket.id %>/comentario">
-          <textarea name="mensaje" placeholder="Añadir comentario interno..." required></textarea>
+          <textarea name="mensaje" placeholder="Añadir comentario..." required></textarea>
+          <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem;margin-bottom:.75rem">
+            <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.85rem;color:#94a3b8">
+              <input type="checkbox" name="enviar_cliente" value="si" style="width:auto;margin:0">
+              Enviar este mensaje al cliente por email
+            </label>
+            <p style="font-size:.75rem;color:#475569;margin-top:.4rem">El cliente recibirá un email y podrá responder desde su consulta.</p>
+          </div>
           <button class="btn btn-blue" type="submit">Comentar</button>
         </form>
       </div>

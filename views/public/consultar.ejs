@@ -108,37 +108,76 @@ textarea{min-height:80px;resize:vertical}
     <% } %>
   </div>
 
-  <% if (ticket.estado === 'Resuelta' || ticket.estado === 'Cerrada') { %>
-  <div class="card">
-    <div class="alert-no-resuelto">
-      <p>¿El problema no ha sido resuelto correctamente? Puedes indicarlo y el equipo lo revisará de nuevo.</p>
+ <div class="card">
+    <div class="hist-title">¿Necesitas algo más?</div>
+    <div style="display:flex;flex-direction:column;gap:.5rem">
+
+      <button onclick="togglePanel('panel-comentario')" 
+        style="background:#1e3a5f;color:#60a5fa;border:1px solid #1d4ed8;border-radius:8px;
+               padding:.6rem 1rem;cursor:pointer;font-size:.85rem;text-align:left">
+        💬 Añadir comentario o información adicional
+      </button>
+
+      <button onclick="togglePanel('panel-adjuntar')"
+        style="background:#1e293b;color:#94a3b8;border:1px solid #334155;border-radius:8px;
+               padding:.6rem 1rem;cursor:pointer;font-size:.85rem;text-align:left">
+        📎 Adjuntar archivos
+      </button>
+
+      <% if (ticket.estado === 'Resuelta' || ticket.estado === 'Cerrada') { %>
+      <button onclick="togglePanel('panel-no-resuelto')"
+        style="background:#3b1a00;color:#fb923c;border:1px solid #c2410c;border-radius:8px;
+               padding:.6rem 1rem;cursor:pointer;font-size:.85rem;text-align:left">
+        ⚠️ No estoy de acuerdo con la resolución
+      </button>
+      <% } %>
+    </div>
+
+    <div id="panel-comentario" style="display:none;margin-top:1rem;border-top:1px solid #334155;padding-top:1rem">
+      <form method="POST" action="/ticket/responder">
+        <input type="hidden" name="codigo" value="<%= ticket.codigo %>">
+        <textarea name="mensaje" placeholder="Escribe tu comentario o información adicional..." required></textarea>
+        <button class="btn btn-blue" type="submit">Enviar</button>
+      </form>
+    </div>
+
+    <div id="panel-adjuntar" style="display:none;margin-top:1rem;border-top:1px solid #334155;padding-top:1rem">
+      <form method="POST" action="/ticket/adjuntar" enctype="multipart/form-data">
+        <input type="hidden" name="codigo" value="<%= ticket.codigo %>">
+        <input type="file" name="archivos" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx">
+        <p style="font-size:.75rem;color:#475569;margin:.4rem 0 .75rem">Máximo 5 archivos · 100MB por archivo</p>
+        <button class="btn btn-blue" type="submit">Subir archivos</button>
+      </form>
+    </div>
+
+    <% if (ticket.estado === 'Resuelta' || ticket.estado === 'Cerrada') { %>
+    <div id="panel-no-resuelto" style="display:none;margin-top:1rem;border-top:1px solid #334155;padding-top:1rem">
+      <p style="font-size:.85rem;color:#fed7aa;margin-bottom:.75rem">
+        Indica por qué no estás de acuerdo con la resolución y el equipo lo revisará de nuevo.
+      </p>
       <form method="POST" action="/ticket/responder">
         <input type="hidden" name="codigo" value="<%= ticket.codigo %>">
         <input type="hidden" name="no_resuelto" value="si">
         <textarea name="mensaje" placeholder="Explica por qué no está resuelto..." required></textarea>
-        <button class="btn btn-red" type="submit">No está resuelto — reabrir</button>
+        <button class="btn btn-red" type="submit">Enviar y reabrir ticket</button>
       </form>
     </div>
-  </div>
-  <% } %>
-
-  <div class="card">
-    <div class="hist-title">Añadir información o comentario</div>
-    <form method="POST" action="/ticket/responder">
-      <input type="hidden" name="codigo" value="<%= ticket.codigo %>">
-      <textarea name="mensaje" placeholder="Añade información adicional, documentos solicitados o comentarios..."></textarea>
-      <button class="btn btn-blue" type="submit">Enviar comentario</button>
-    </form>
-    <div style="margin-top:1rem;border-top:1px solid #334155;padding-top:1rem">
-      <div class="hist-title" style="margin-bottom:.75rem">Adjuntar archivos</div>
-      <form method="POST" action="/ticket/adjuntar" enctype="multipart/form-data">
-        <input type="hidden" name="codigo" value="<%= ticket.codigo %>">
-        <input type="file" name="archivos" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx">
-        <button class="btn btn-blue" type="submit" style="margin-top:.5rem">Subir archivos</button>
-      </form>
-    </div>
+    <% } %>
   </div>
 
+<script>
+function togglePanel(id) {
+    const panel = document.getElementById(id);
+    const todos = ['panel-comentario', 'panel-adjuntar', 'panel-no-resuelto'];
+    todos.forEach(p => {
+        if (p !== id) {
+            const el = document.getElementById(p);
+            if (el) el.style.display = 'none';
+        }
+    });
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+</script>
   <% if (comentarios && comentarios.length > 0) { %>
   <div class="card">
     <div class="hist-title">Comunicaciones</div>
