@@ -32,8 +32,9 @@ app.use('/',          require('./routes/public'));
 app.use('/auth',      require('./routes/auth'));
 app.use('/admin',     require('./routes/admin'));
 app.use('/tecnico',   require('./routes/tecnico'));
-app.use('/reportes',  require('./routes/reportes'));
-app.use('/exportar',  require('./routes/exportar'));
+app.use('/reportes',      require('./routes/reportes'));
+app.use('/exportar',      require('./routes/exportar'));
+app.use('/mantenimiento', require('./routes/mantenimiento'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

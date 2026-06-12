@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mantenimiento</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+nav{background:#1e293b;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #334155}
+nav .brand{color:white;font-weight:700;font-size:1.1rem;letter-spacing:-.02em}
+nav .brand span{color:#3b82f6}
+nav .links a{color:#94a3b8;text-decoration:none;padding:.4rem .75rem;border-radius:6px;font-size:.85rem}
+nav .links a:hover{color:white;background:#334155}
+.container{padding:1.5rem 2rem;max-width:1100px;margin:0 auto}
+h1{font-size:1.4rem;font-weight:700;color:white;margin-bottom:1.5rem}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+.card-title{font-size:.8rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem}
+.kpi{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.25rem;text-align:center}
+.kpi .num{font-size:1.8rem;font-weight:700;color:#60a5fa}
+.kpi .label{font-size:.75rem;color:#64748b;margin-top:.25rem}
+.btn{padding:.6rem 1.25rem;border:none;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;transition:all .15s}
+.btn-blue{background:#3b82f6;color:white}.btn-blue:hover{background:#2563eb}
+.btn-green{background:#059669;color:white}.btn-green:hover{background:#047857}
+.btn-red{background:#dc2626;color:white}.btn-red:hover{background:#b91c1c}
+.btn-ghost{background:#334155;color:#94a3b8}.btn-ghost:hover{color:white}
+.btn-full{width:100%;justify-content:center;margin-bottom:.5rem}
+table{width:100%;border-collapse:collapse}
+th{font-size:.73rem;color:#64748b;text-transform:uppercase;padding:.5rem 0;text-align:left;border-bottom:1px solid #334155}
+td{padding:.6rem 0;font-size:.85rem;color:#cbd5e1;border-bottom:1px solid #1e293b}
+input,select{background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:.5rem .75rem;border-radius:8px;font-size:.88rem;width:100%;margin-bottom:.75rem}
+.alert{padding:.75rem 1rem;border-radius:8px;font-size:.85rem;margin-bottom:1rem}
+.alert-warning{background:#3b2a00;border:1px solid #f59e0b;color:#fbbf24}
+.alert-info{background:#1e3a5f;border:1px solid #3b82f6;color:#60a5fa}
+.result{display:none;padding:.75rem 1rem;border-radius:8px;font-size:.85rem;margin-top:.75rem}
+.result.ok{background:#064e2a;color:#34d399;border:1px solid #10b981}
+.result.err{background:#3b0000;color:#f87171;border:1px solid #dc2626}
+@media(max-width:768px){.grid-2{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.grid-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">Ticket<span>Flow</span></span>
+  <div class="links">
+    <a href="/admin/dashboard">Dashboard</a>
+    <a href="/admin/areas">Áreas</a>
+    <a href="/admin/usuarios">Usuarios</a>
+    <a href="/reportes">Reportes</a>
+    <a href="/mantenimiento">Mantenimiento</a>
+    <a href="/auth/logout">Cerrar sesión</a>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>Mantenimiento del sistema</h1>
+
+  <div class="grid-3">
+    <div class="kpi"><div class="num"><%= stats.tickets %></div><div class="label">Tickets totales</div></div>
+    <div class="kpi"><div class="num"><%= stats.comentarios %></div><div class="label">Comentarios</div></div>
+    <div class="kpi"><div class="num"><%= stats.adjuntos %></div><div class="label">Adjuntos</div></div>
+    <div class="kpi"><div class="num"><%= stats.usuarios %></div><div class="label">Usuarios</div></div>
+    <div class="kpi"><div class="num"><%= stats.historial %></div><div class="label">Entradas historial</div></div>
+    <div class="kpi"><div class="num"><%= tablas.reduce((s,t) => s + parseFloat(t.size_mb||0), 0).toFixed(2) %>MB</div><div class="label">Tamaño total BD</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">💾 Copias de seguridad</div>
+      <div class="alert alert-info">Los backups incluyen todos los datos del sistema en formato SQL restaurable.</div>
+      <a href="/mantenimiento/backup/completo" class="btn btn-green btn-full">↓ Descargar backup completo (SQL)</a>
+      <a href="/mantenimiento/backup/tickets" class="btn btn-blue btn-full">↓ Descargar solo tickets (JSON)</a>
+      <div style="border-top:1px solid #334155;padding-top:1rem;margin-top:.5rem">
+        <div class="card-title">📧 Enviar backup por email</div>
+        <input type="email" id="backup-email" placeholder="email@empresa.com" value="<%= process.env.MAIL_USER || '' %>">
+        <button class="btn btn-ghost btn-full" onclick="enviarBackup()">Enviar backup al email</button>
+        <div id="backup-result" class="result"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧹 Limpieza de datos</div>
+      <div class="alert alert-warning">⚠️ Esta acción es irreversible. Los tickets eliminados no se pueden recuperar.</div>
+      <div style="margin-bottom:1rem">
+        <p style="font-size:.83rem;color:#64748b;margin-bottom:.75rem">Tickets cerrados/resueltos disponibles para limpiar:</p>
+        <table>
+          <thead><tr><th>Antigüedad</th><th>Tickets</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Más de 30 días</td>
+              <td style="color:<%= cerrados.dias30 > 0 ? '#fbbf24' : '#34d399' %>"><%= cerrados.dias30 %></td>
+              <td><button class="btn btn-ghost" style="padding:3px 10px;font-size:.78rem" onclick="limpiar(30)">Limpiar</button></td>
+            </tr>
+            <tr>
+              <td>Más de 90 días</td>
+              <td style="color:<%= cerrados.dias90 > 0 ? '#fbbf24' : '#34d399' %>"><%= cerrados.dias90 %></td>
+              <td><button class="btn btn-ghost" style="padding:3px 10px;font-size:.78rem" onclick="limpiar(90)">Limpiar</button></td>
+            </tr>
+            <tr>
+              <td>Más de 180 días</td>
+              <td style="color:<%= cerrados.dias180 > 0 ? '#fbbf24' : '#34d399' %>"><%= cerrados.dias180 %></td>
+              <td><button class="btn btn-ghost" style="padding:3px 10px;font-size:.78rem" onclick="limpiar(180)">Limpiar</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div id="limpiar-result" class="result"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Tamaño de tablas</div>
+    <table>
+      <thead><tr><th>Tabla</th><th>Registros</th><th>Tamaño</th></tr></thead>
+      <tbody>
+      <% tablas.forEach(t => { %>
+      <tr>
+        <td style="color:white;font-weight:500"><%= t.table_name || t.TABLE_NAME %></td>
+        <td><%= t.table_rows || t.TABLE_ROWS || '—' %></td>
+        <td><%= t.size_mb || t.SIZE_MB || 0 %> MB</td>
+      </tr>
+      <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+async function limpiar(dias) {
+    if (!confirm(`¿Eliminar tickets cerrados hace más de ${dias} días? Esta acción no se puede deshacer.`)) return;
+    const res = await fetch('/mantenimiento/limpiar/tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `dias=${dias}`
+    });
+    const data = await res.json();
+    const el = document.getElementById('limpiar-result');
+    el.style.display = 'block';
+    if (data.ok) {
+        el.className = 'result ok';
+        el.textContent = `✅ ${data.eliminados} tickets eliminados correctamente.`;
+        setTimeout(() => location.reload(), 2000);
+    } else {
+        el.className = 'result err';
+        el.textContent = `❌ Error: ${data.error}`;
+    }
+}
+
+async function enviarBackup() {
+    const email = document.getElementById('backup-email').value;
+    if (!email) return alert('Introduce un email');
+    const res = await fetch('/mantenimiento/backup/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `email=${encodeURIComponent(email)}`
+    });
+    const data = await res.json();
+    const el = document.getElementById('backup-result');
+    el.style.display = 'block';
+    if (data.ok) {
+        el.className = 'result ok';
+        el.textContent = '✅ Backup enviado al email correctamente.';
+    } else {
+        el.className = 'result err';
+        el.textContent = `❌ Error: ${data.error}`;
+    }
+}
+</script>
+</body>
+</html>
